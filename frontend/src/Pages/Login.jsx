@@ -56,9 +56,11 @@ const Login = () => {
           localStorage.setItem("email", response.data.email);
           localStorage.setItem("username", response.data.username);
 
-          Cookies.set("session_id", response.data.session_id, { expires: 30 });
-          Cookies.set("username", response.data.username, { expires: 30 });
-          Cookies.set("isAdmin",response.data.isAdmin,{expires : 30});
+          Cookies.set("session_id", response.data.session_id, { expires: 30, path: "/" });
+          Cookies.set("username", response.data.username, { expires: 30, path: "/" });
+          Cookies.set("isAdmin", response.data.isAdmin, { expires: 30, path: "/" });
+          Cookies.set("email", response.data.email, { expires: 30, path: "/" });
+          
 
           navigate("/");
         } else {

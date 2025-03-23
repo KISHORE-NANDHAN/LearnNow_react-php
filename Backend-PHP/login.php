@@ -18,8 +18,13 @@ if ($conn->connect_error) {
 
 // Handle POST request
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $mail = $_POST['mail'];
-    $pwd = $_POST['password'];
+    $mail = trim($_POST['mail']);
+    $pwd = trim($_POST['password']);
+
+    if (empty($mail) || empty($pwd)) {
+        echo json_encode(["success" => false, "message" => "Email and password are required"]);
+        exit;
+    }
 
     // Secure query using prepared statements
     $stmt = $conn->prepare("SELECT * FROM users WHERE email = ?");
@@ -35,16 +40,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['username'] = $row['name'];
 
             // Set cookies securely
-            setcookie("session_id", $_SESSION['session_id'], time() + (86400 * 30), "/", "", false, true);
-            setcookie("username", $row['name'], time() + (86400 * 30), "/", "", false, true);
+            setcookie("session_id", $_SESSION['session_id'], time() + (86400 * 30), "/", "", false, false);
+            setcookie("username", $row['name'], time() + (86400 * 30), "/", "", false, false);
+            setcookie("isAdmin", $row['IsAdmin'], time() + (86400 * 30), "/", "", false, false);            
 
             echo json_encode([
                 "success" => true,
                 "message" => "Login successful",
                 "session_id" => $_SESSION['session_id'],
                 "username" => $row['name'],
-                "email" => $mail
-                "isAdmin" => $_row['isAdmin']
+                "email" => $mail,
+                "isAdmin" => $row['IsAdmin']
             ]);
         } else {
             echo json_encode(["success" => false, "message" => "Invalid credentials"]);
@@ -56,6 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->close();
     $conn->close();
 } else {
+    http_response_code(400);
     echo json_encode(["success" => false, "message" => "Invalid request"]);
 }
 ?>

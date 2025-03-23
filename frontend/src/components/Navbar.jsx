@@ -1,46 +1,90 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 50) {
+        setIsScrolled(true);
+      } else {
+        setIsScrolled(false);
+      }
+    };
+
+    window.addEventListener("scroll", handleScroll);
+
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  const toggleMenu = () => {
+    setIsMenuOpen(!isMenuOpen);
+  };
+
   return (
-    <nav className="bg-black py-4 shadow-md fixed w-full top-0 z-10">
-      <div className="container mx-auto flex justify-between items-center px-4">
-        
+    <nav
+      className={`fixed w-full top-0 z-20 transition-all duration-300 ${
+        isScrolled ? "bg-black/70 backdrop-blur-md shadow-md" : "bg-black/50 backdrop-blur-sm"
+      }`}
+    >
+      <div className="container mx-auto px-4 py-3 flex items-center justify-between">
         {/* Logo */}
-        <div>
-          <Link to="/home">
-            <img src="/images/logo2.png" alt="Logo" className="h-12" />
-          </Link>
-        </div>
+        <Link to="/home" className="flex items-center">
+          <img src="/images/logo2.png" alt="Logo" className="h-8 md:h-10" />
+          <span className="ml-2 text-xl font-semibold text-white">YourAppName</span> {/* Replace with your app name */}
+        </Link>
+
+        {/* Mobile Menu Button */}
+        <button
+          onClick={toggleMenu}
+          className="md:hidden text-white focus:outline-none"
+          aria-label="Menu"
+        >
+          <svg
+            className="h-6 w-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M4 6h16M4 12h16M4 18h16"
+            ></path>
+          </svg>
+        </button>
 
         {/* Navigation Links */}
-        <ul className="flex space-x-6 text-yellow-400 text-lg font-semibold">
-          <li>
-            <Link to="/home" className="hover:text-white transition duration-300">
-              Home
-            </Link>
-          </li>
-          <li>
-            <Link to="/home#about" className="hover:text-white transition duration-300">
-              About Us
-            </Link>
-          </li>
-          <li>
-            <Link to="/explore" className="hover:text-white transition duration-300">
-              Explore
-            </Link>
-          </li>
-          <li>
-            <Link to="/profile" className="hover:text-white transition duration-300">
-              Profile
-            </Link>
-          </li>
-          <li>
-            <Link to="/logout" className="hover:text-red-400 transition duration-300">
-              Logout
-            </Link>
-          </li>
-        </ul>
+        <div
+          className={`md:flex items-center space-x-6 text-yellow-400 text-lg font-semibold ${
+            isMenuOpen ? "flex flex-col absolute top-full left-0 w-full bg-black/80 backdrop-blur-md py-4 px-4 md:static md:bg-transparent md:py-0 md:px-0" : "hidden md:flex"
+          }`}
+        >
+          <Link to="/" className="hover:text-white transition duration-300 block py-2 md:inline-block">
+            Home
+          </Link>
+          <Link to="/MyCourses" className="hover:text-white transition duration-300 block py-2 md:inline-block">
+            MyCourses
+          </Link>
+          <Link to="/explore" className="hover:text-white transition duration-300 block py-2 md:inline-block">
+            Explore Courses
+          </Link>
+          <Link to="/profile" className="hover:text-white transition duration-300 block py-2 md:inline-block">
+            Profile
+          </Link>
+          <Link to="/certification" className="hover:text-white transition duration-300 block py-2 md:inline-block">
+            My Certifications
+          </Link>
+          <Link to="/logout" className="hover:text-red-400 transition duration-300 block py-2 md:inline-block">
+            Logout
+          </Link>
+        </div>
       </div>
     </nav>
   );
