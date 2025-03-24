@@ -4,8 +4,7 @@ import Login from "./Pages/Login";
 import Signup from "./Pages/Signup.jsx";
 import Profile from "./Pages/Profile.jsx";
 import Explore from "./Pages/ExploreCourses.jsx";
-import Courses from "./Pages/Courses";
-import OrderDelivery from "./Pages/OrderDelivery";
+import Course from "./Pages/Course.jsx";
 import AdminDashboard from "./Pages/AdminDashboard";
 import NotFound from "./Pages/NotFound";
 import Bot from './Pages/Bot.jsx';
@@ -20,8 +19,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/explore" element={<Explore />} />
-        <Route path="/courses" element={<Courses />} />
-        <Route path="/order-delivery" element={<OrderDelivery />} />
+        <Route path="/course/*" element={<Course />} />
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/MyCourses" element={<MyCourses />} />
         <Route path="/bot" element={<Bot />} />
