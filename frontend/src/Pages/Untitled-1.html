@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forgot Password</title>
+    <styles>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f4;
+        }
+        
+        .container {
+            background: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 300px;
+            border-radius: 10px;
+        }
+        
+        input {
+            width: 90%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        
+        button {
+            width: 100%;
+            padding: 10px;
+            background: blue;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        
+        button:hover {
+            background: darkblue;
+        }
+        
+    </styles>
+    <script>
+        let generatedOTP = "";
+let userEmail = "";
+
+function sendOTP() {
+    userEmail = document.getElementById("email").value;
+    if (!userEmail) {
+        alert("Please enter your email");
+        return;
+    }
+
+    generatedOTP = Math.floor(100000 + Math.random() * 900000); // Generate 6-digit OTP
+    console.log("Generated OTP:", generatedOTP); // Debug
+
+    fetch("send_otp.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: userEmail, otp: generatedOTP })
+    }).then(response => response.text())
+      .then(data => {
+          alert("OTP sent to your email");
+          document.getElementById("step1").style.display = "none";
+          document.getElementById("step2").style.display = "block";
+      });
+}
+
+function verifyOTP() {
+    const userOTP = document.getElementById("otp").value;
+    if (userOTP == generatedOTP) {
+        alert("OTP verified successfully");
+        document.getElementById("step2").style.display = "none";
+        document.getElementById("step3").style.display = "block";
+    } else {
+        alert("Invalid OTP");
+    }
+}
+
+function updatePassword() {
+    const newPassword = document.getElementById("newPassword").value;
+    const confirmPassword = document.getElementById("confirmPassword").value;
+
+    if (newPassword !== confirmPassword) {
+        alert("Passwords do not match");
+        return;
+    }
+
+    fetch("update_password.php", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: userEmail, password: newPassword })
+    }).then(response => response.text())
+      .then(data => {
+          alert("Password updated successfully");
+          window.location.href = "login.html";
+      });
+}
+
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h2>Forgot Password</h2>
+        <div id="step1">
+            <input type="email" id="email" placeholder="Enter your email" required>
+            <button onclick="sendOTP()">Send OTP</button>
+        </div>
+        
+        <div id="step2" style="display:none;">
+            <input type="text" id="otp" placeholder="Enter OTP" required>
+            <button onclick="verifyOTP()">Verify OTP</button>
+        </div>
+
+        <div id="step3" style="display:none;">
+            <input type="password" id="newPassword" placeholder="New Password" required>
+            <input type="password" id="confirmPassword" placeholder="Confirm Password" required>
+            <button onclick="updatePassword()">Update Password</button>
+        </div>
+    </div>
+</body>
+</html>
