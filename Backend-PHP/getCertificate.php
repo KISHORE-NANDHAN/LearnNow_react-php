@@ -17,7 +17,7 @@ if ($conn->connect_error) {
 }
 
 // Fetch user certifications
-$sql = "SELECT id, email, course_id, Course_Name, Certificate_Credential, issued_at FROM user_certifications";
+$sql = "SELECT id, email, course_id, Course_Name, Certificate_Credential, issued_at FROM user_certifications where id = ?";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
