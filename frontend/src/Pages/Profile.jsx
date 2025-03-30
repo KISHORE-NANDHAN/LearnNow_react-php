@@ -22,6 +22,7 @@ const Profile = () => {
 
   const profileImageInputRef = useRef(null); // Reference for the hidden file input
 
+
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {

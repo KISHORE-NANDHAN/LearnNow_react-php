@@ -2,11 +2,52 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import Navbar from '../components/Navbar';
+import Cookies from 'js-cookie';
+import { useNavigate } from 'react-router-dom';
 
 const MyCourses = () => {
   const [courses, setCourses] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    const verifyUser = async () => {
+      try {
+        const token = Cookies.get('session_id'); 
+        console.log("Token Retrieved:", token); // Debugging
+  
+        if (!token) {
+          console.log("No token found, redirecting to login.");
+          navigate('/login');
+          return;
+        }
+  
+        const response = await axios.post(
+          "http://localhost/onlineplatform/backend-php/sessionCheck/sessionValid.php",
+          { token },
+          { withCredentials: true } // Ensure credentials (cookies) are included
+        );
+        console.log("Response:", response); // Debugging
+  
+        if (response.data.success) {
+          console.log("Session validated");
+        } else {
+          console.log("Invalid session, clearing token.");
+          Cookies.remove('session_id');
+          navigate('/login');
+        }
+      } catch (error) {
+        console.error('Error verifying session:', error);
+        Cookies.remove('session_id');
+        navigate('/login');
+      } finally {
+        setLoading(false);
+      }
+    };
+  
+    verifyUser();
+  }, [navigate]);
 
   useEffect(() => {
     const fetchCourses = async () => {

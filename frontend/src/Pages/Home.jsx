@@ -95,7 +95,7 @@ const Home = () => {
           <div className="container mx-auto px-4">
             <h1 className="text-3xl md:text-5xl lg:text-6xl font-bold mb-4">{slides[currentSlide].title}</h1>
             <p className="text-lg md:text-xl lg:text-2xl mb-8">{slides[currentSlide].description}</p>
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full">
+            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-full" onClick={()=>navigate('/explore')}>
               Explore Courses
             </button>
           </div>
@@ -108,9 +108,9 @@ const Home = () => {
           <h2 className="text-3xl font-semibold text-center mb-8 text-gray-800">Our Top Courses</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {/* Course Card 1 */}
-            <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300" onClick={()=>navigate('/explore')}>
               <img
-                src="https://images.unsplash.com/photo-1507238691740-187a5b1d37b7?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
+                src="https://miro.medium.com/v2/resize:fit:1200/0*M4bxiCIjcTK-2Xr6.jpeg"
                 alt="Web Development Course"
                 className="w-full h-48 object-cover"
               />
@@ -125,9 +125,9 @@ const Home = () => {
             </div>
 
             {/* Course Card 2 */}
-            <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300" onClick={()=>navigate('/explore')}>
               <img
-                src="https://images.unsplash.com/photo-1519389950473-47a7059cd0e5?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
+                src="https://www.mygreatlearning.com/blog/wp-content/uploads/2019/09/What-is-data-science-2.jpg"
                 alt="Data Science Course"
                 className="w-full h-48 object-cover"
               />
@@ -142,9 +142,9 @@ const Home = () => {
             </div>
 
             {/* Course Card 3 */}
-            <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300">
+            <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300" onClick={()=>navigate('/explore')}>
               <img
-                src="https://images.unsplash.com/photo-1542831323-538297a07c54?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1170&q=80"
+                src="https://img.freepik.com/free-vector/app-development-banner_33099-1720.jpg"
                 alt="Mobile App Development Course"
                 className="w-full h-48 object-cover"
               />
