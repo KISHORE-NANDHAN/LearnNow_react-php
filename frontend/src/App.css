@@ -36,3 +36,12 @@
     transform: rotate(360deg);
   }
 }
+@keyframes progress-bar {
+  0% { width: 100%; }
+  100% { width: 0%; }
+}
+
+.progress-bar {
+    animation-fill-mode: forwards; /* Keep final state */
+    animation-iteration-count: 1;
+}

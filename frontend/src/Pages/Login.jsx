@@ -4,12 +4,14 @@ import axios from "axios";
 import Cookies from "js-cookie"; // Import js-cookie for managing cookies
 import bg from '../Media/signupbg.mp4';
 import logo from '../Media/logo2.png';
+import Alert from "../components/Alert"; // Import Alert component
 
 const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ email: "", password: "" });
   const [showPassword, setShowPassword] = useState(false);
+  const [alert, setAlert] = useState({ message: "", type: "" }); // State for Alert
   const navigate = useNavigate();
 
   const togglePasswordVisibility = () => {
@@ -60,17 +62,22 @@ const Login = () => {
           Cookies.set("username", response.data.username, { expires: 30, path: "/" });
           Cookies.set("isAdmin", response.data.isAdmin, { expires: 30, path: "/" });
           Cookies.set("email", response.data.email, { expires: 30, path: "/" });
-          
 
-          navigate("/");
+          // Show success alert
+          setAlert({ message: "Login successful!", type: "success" });
+
+          // Redirect after delay to allow user to see the alert
+          setTimeout(() => {
+            navigate("/");
+          }, 1200);
         } else {
           console.log(response);
-          alert(response.data.message);
+          setAlert({ message: response.data.message, type: "error" });
         }
       })
       .catch((error) => {
         console.error("Login Error:", error);
-        alert("An error occurred while logging in.");
+        setAlert({ message: "An error occurred while logging in.", type: "error" });
       });
   };
 
@@ -79,6 +86,9 @@ const Login = () => {
       <video autoPlay muted loop className="absolute inset-0 w-full h-full object-cover">
         <source src={bg} type="video/mp4" />
       </video>
+
+      {/* Show alert if there's a message */}
+      {alert.message && <Alert message={alert.message} type={alert.type} onClose={() => setAlert({ message: "", type: "" })} />}
 
       <div className="relative bg-black/60 backdrop-blur-md text-white p-8 rounded-xl w-96 border-2 border-yellow-400 text-center">
         <img src={logo} alt="Logo" className="w-full h-20 object-contain mb-4" />

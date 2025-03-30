@@ -3,11 +3,15 @@ import axios from 'axios';
 import Navbar from '../components/Navbar';
 import Cookies from 'js-cookie';
 import { useNavigate } from 'react-router-dom';
+import Alert from "../components/Alert"; // Import Alert component
+
 
 const ExploreCourses = () => {
     const [courses, setCourses] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [alert, setAlert] = useState({ message: "", type: "" }); // State for Alert
+
 
     // Filtering and Sorting States
     const [categoryFilter, setCategoryFilter] = useState('All');
@@ -39,8 +43,14 @@ const ExploreCourses = () => {
           console.log("Session validated");
         } else {
           console.log("Invalid session, clearing token.");
-          Cookies.remove('session_id');
-          navigate('/login');
+          setAlert({ message: "Please Login", type: "error" });
+
+          // Redirect after delay to allow user to see the alert
+          setTimeout(() => {
+            Cookies.remove('session_id');
+            navigate('/login');
+          }, 1200);
+          
         }
       } catch (error) {
         console.error('Error verifying session:', error);
@@ -140,9 +150,12 @@ const ExploreCourses = () => {
             );
 
             if (response.data.success) {
-                alert(`Course "${course.title}" added to your courses!`);
+                setAlert({ message: `Course "${course.title}" added to your courses!`, type: "success" });
+
+                //alert(`Course "${course.title}" added to your courses!`);
             } else {
-                alert(response.data.message || 'Failed to add course. Please try again.');
+                setAlert({ message: response.data.message || 'Failed to add course. Please try again.', type: "success" });
+                //alert(response.data.message || 'Failed to add course. Please try again.');
             }
         } catch (error) {
             console.error('Error adding course:', error);
@@ -161,6 +174,7 @@ const ExploreCourses = () => {
 
     return (
         <div className="bg-gray-100 min-h-screen">
+            {alert.message && <Alert message={alert.message} type={alert.type} onClose={() => setAlert({ message: "", type: "" })} />}
             <Navbar />
             <br /><br /><br />
             <div className=" container mx-auto py-10 px-4">

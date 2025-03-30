@@ -55,7 +55,9 @@ const Certifications = () => {
   // Fetch certificates from backend
   useEffect(() => {
     axios
-      .get("http://localhost/OnlinePlatform/Backend-PHP/getCertificate.php")
+      .get("http://localhost/OnlinePlatform/Backend-PHP/getCertificate.php",{
+        withCredentials : true
+      })
       .then((response) => {
         console.log("Certificates API Response:", response.data);
         
@@ -81,19 +83,32 @@ const Certifications = () => {
     if (!element) return;
 
     try {
-      const canvas = await html2canvas(element, { scale: 2 }); // Capture as high-res image
+      // Capture high-resolution image with better scaling & fixed width
+      const canvas = await html2canvas(element, {
+        scale: 2,  // Increase scale for better quality
+        useCORS: true, // Ensures images are captured properly
+        allowTaint: true, // Allows cross-origin images
+        scrollX: 0,
+        scrollY: 0,
+        windowWidth: element.scrollWidth, 
+        windowHeight: element.scrollHeight 
+      });
+
       const imgData = canvas.toDataURL("image/png"); // Convert to image
 
-      const pdf = new jsPDF("landscape", "mm", "a4");
-      const imgWidth = 297; // A4 width in mm
-      const imgHeight = (canvas.height * imgWidth) / canvas.width; // Maintain aspect ratio
+      // Create PDF document
+      const pdf = new jsPDF("portrait", "mm", "a4");
+      const imgWidth = 205; // A4 width in mm
+      const imgHeight = (canvas.height * imgWidth + 50) / canvas.width; // Maintain aspect ratio
 
+      // Ensure full image fits in PDF
       pdf.addImage(imgData, "PNG", 0, 0, imgWidth, imgHeight);
       pdf.save(`Certificate_${id}.pdf`); // Download the PDF
     } catch (error) {
       console.error("Error generating PDF:", error);
     }
-  };
+};
+
 
   return (
     <>
@@ -115,7 +130,7 @@ const Certifications = () => {
                 {/* Assign a unique ref for each certificate */}
                 <div ref={(el) => (certificateRefs.current[cert.id] = el)}>
                   <Certificate
-                    recipientName={cert.email}
+                    recipientName={cert.Name}
                     courseName={cert.Course_Name}
                     credentials={cert.Certificate_Credential}
                     issuedAt={cert.issued_at}

@@ -12,26 +12,29 @@ import MyCourses from './Pages/MyCourses.jsx';
 import Certifications from './Pages/Certifications.jsx';
 import Forget_password from './Pages/Forget_password.jsx';
 import Logout from './Pages/Logout.jsx';
+import { AlertProvider } from "./Context/AlertContext.jsx";
 
 function App() {
   return (
-    <Router>
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/explore" element={<Explore />} />
-        <Route path="/course/:courseId" element={<Course />} />
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/MyCourses" element={<MyCourses />} />
-        <Route path="/bot" element={<Bot />} />
-        <Route path="/certifications" element={<Certifications/>}/>
-        <Route path="/otp" element={<Forget_password/>}/>
-        <Route path="/logout" element={<Logout/>}/>
-        <Route path="*" element={<NotFound />} />
-      </Routes>
-    </Router>
+    <AlertProvider> {/* ✅ Wrap the entire app */}
+      <Router>
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/profile" element={<Profile />} />
+          <Route path="/explore" element={<Explore />} />
+          <Route path="/course/:courseId" element={<Course />} />
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/MyCourses" element={<MyCourses />} />
+          <Route path="/bot" element={<Bot />} />
+          <Route path="/certifications" element={<Certifications />} />
+          <Route path="/otp" element={<Forget_password />} />
+          <Route path="/logout" element={<Logout />} />
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </Router>
+    </AlertProvider>
   );
 }
 

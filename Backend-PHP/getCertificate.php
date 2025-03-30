@@ -1,24 +1,31 @@
 <?php
+
+include './controllers/sessionSend.php';
+include './DbConnect/db.php';
+
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: GET");
 header("Content-Type: application/json; charset=UTF-8");
 
-// Database connection
-$servername = "localhost";
-$username = "root";  // Change if you have a different MySQL user
-$password = "";      // Change if you have a password
-$dbname = "online_platform";
 
-$conn = new mysqli($servername, $username, $password, $dbname);
+$email = isSessionValid();
 
-// Check connection
-if ($conn->connect_error) {
-    die(json_encode(["error" => "Database connection failed: " . $conn->connect_error]));
+if (!$email) {
+    echo json_encode(["error" => "Unauthorized access","email" => $email]);
+    exit();
 }
 
-// Fetch user certifications
-$sql = "SELECT id, email, course_id, Course_Name, Certificate_Credential, issued_at FROM user_certifications";
-$result = $conn->query($sql);
+// Prevent SQL injection by using prepared statements
+$stmt = $conn->prepare("
+    SELECT uc.id, u.Name, uc.course_id, uc.Course_Name, uc.Certificate_Credential, uc.issued_at 
+    FROM user_certifications AS uc
+    JOIN users AS u ON uc.email = u.email
+    WHERE uc.email = ?
+");
+
+$stmt->bind_param("s", $email);
+$stmt->execute();
+$result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     $certificates = [];
@@ -32,6 +39,7 @@ if ($result->num_rows > 0) {
     echo json_encode(["message" => "No certifications found."]);
 }
 
-// Close connection
+// Close resources
+$stmt->close();
 $conn->close();
 ?>

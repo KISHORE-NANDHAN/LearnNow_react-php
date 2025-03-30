@@ -249,7 +249,7 @@ const Home = () => {
 
       {/* Footer Section */}
       <footer className="bg-gray-800 py-4 text-white text-center">
-        <p>© 2023 Your Education Platform. All rights reserved for KISHORE NANDHAN @LBRCE.</p>
+        <p>© 2025 LearnNow - It's Never Late to Learn. All rights reserved for KISHORE NANDHAN @LBRCE.</p>
       </footer>
     </div>
   );
