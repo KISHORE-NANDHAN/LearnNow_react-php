@@ -32,10 +32,16 @@ $sql = "SELECT id, name, email, mobile, dob, gender, drno, street, pincode, city
 $stmt = $conn->prepare($sql);
 $stmt->bind_param("s", $userEmail);
 $stmt->execute();
-$result = $stmt->get_result();
+$result = $stmt->get_result(); // <-- Fetch result set
 
 if ($result->num_rows > 0) {
     $user = $result->fetch_assoc();
+    
+    // Convert profile picture to base64 if it exists
+    if (!empty($user['pfp'])) {
+        $user['pfp'] = "data:image/jpeg;base64," . base64_encode($user['pfp']);
+    }
+    
     echo json_encode(["success" => true, "user" => $user]);
 } else {
     echo json_encode(["success" => false, "message" => "User not found."]);

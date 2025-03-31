@@ -70,7 +70,7 @@ const Signup = () => {
   return (
     <div className="relative min-h-screen flex items-center justify-center bg-gray-900 text-white">
       <video autoPlay loop muted className="absolute top-0 left-0 w-full h-full object-cover z-0">
-        <source src={bg} type="video/mp4" />
+        <source src='https://videos.pexels.com/video-files/3129957/3129957-uhd_2560_1440_25fps.mp4' type="video/mp4" />
       </video>
 
       <div className="relative bg-black/60 bg-opacity-70 backdrop-blur-md p-8 rounded-lg w-full max-w-xl border-2 border-yellow-400 z-10">

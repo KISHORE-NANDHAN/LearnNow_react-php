@@ -1,27 +1,13 @@
 <?php
 include './CORSaccess/corsAccess.php';
+include './DbConnect/db.php';
+include './controllers/sessionSend.php';
 
-session_start();
 header("Content-Type: application/json");
 
-if (!isset($_SESSION['session_id']) || !isset($_COOKIE['session_id']) || $_SESSION['session_id'] !== $_COOKIE['session_id']) {
-    echo json_encode(["success" => false, "message" => "Session expired. Please log in again."]);
-    exit;
-}
-
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "online_platform";
-
-$conn = new mysqli($servername, $username, $password, $dbname);
-if ($conn->connect_error) {
-    die(json_encode(["success" => false, "message" => "Connection failed: " . $conn->connect_error]));
-}
-
-$email = $_SESSION['mail'] ?? null;
+$email = isSessionValid();
 if (!$email) {
-    echo json_encode(["success" => false, "message" => "User not authenticated."]);
+    echo json_encode(["success" => false, "message" => "User not authenticated.", "debug" => $_SESSION]);
     exit;
 }
 
@@ -42,27 +28,35 @@ $pincode = $_POST['pincode'] ?? null;
 $city = $_POST['city'] ?? null;
 $state = $_POST['state'] ?? null;
 
-// Prepare SQL query
-$sql = "UPDATE users SET name=?, mobile=?, dob=?, gender=?, drno=?, street=?, pincode=?, city=?, state=?";
-$params = ["sssssssss", $name, $mobile, $dob, $gender, $drno, $street, $pincode, $city, $state];
-
 if ($profilePicData) {
-    $sql .= ", pfp=?";
-    $params[0] .= "b";
-    $params[] = $profilePicData;
+    $sql = "UPDATE users SET name=?, mobile=?, dob=?, gender=?, drno=?, street=?, pincode=?, city=?, state=?, pfp=? WHERE email=?";
+    $stmt = $conn->prepare($sql);
+    
+    if (!$stmt) {
+        echo json_encode(["success" => false, "message" => "SQL Prepare Error: " . $conn->error]);
+        exit;
+    }
+
+    // Ensure correct number of parameters
+    $stmt->bind_param("sssssssssss", $name, $mobile, $dob, $gender, $drno, $street, $pincode, $city, $state, $profilePicData, $email);
+} else {
+    $sql = "UPDATE users SET name=?, mobile=?, dob=?, gender=?, drno=?, street=?, pincode=?, city=?, state=? WHERE email=?";
+    $stmt = $conn->prepare($sql);
+    
+    if (!$stmt) {
+        echo json_encode(["success" => false, "message" => "SQL Prepare Error: " . $conn->error]);
+        exit;
+    }
+
+    // Ensure correct number of parameters
+    $stmt->bind_param("ssssssssss", $name, $mobile, $dob, $gender, $drno, $street, $pincode, $city, $state, $email);
 }
 
-$sql .= " WHERE email=?";
-$params[0] .= "s";
-$params[] = $email;
-
-$stmt = $conn->prepare($sql);
-$stmt->bind_param(...$params);
-
+// Execute the query
 if ($stmt->execute()) {
     echo json_encode(["success" => true, "message" => "Profile updated successfully."]);
 } else {
-    echo json_encode(["success" => false, "message" => "Error updating profile: " . $conn->error]);
+    echo json_encode(["success" => false, "message" => "Error updating profile: " . $stmt->error]);
 }
 
 $stmt->close();

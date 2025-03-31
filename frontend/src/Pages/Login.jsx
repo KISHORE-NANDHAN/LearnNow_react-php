@@ -84,7 +84,7 @@ const Login = () => {
   return (
     <div className="relative w-full h-screen flex items-center justify-center">
       <video autoPlay muted loop className="absolute inset-0 w-full h-full object-cover">
-        <source src={bg} type="video/mp4" />
+        <source src='https://videos.pexels.com/video-files/3129957/3129957-uhd_2560_1440_25fps.mp4' type="video/mp4" />
       </video>
 
       {/* Show alert if there's a message */}

@@ -28,6 +28,7 @@ const Profile = () => {
       try {
         const token = Cookies.get('session_id');
         if (!token) {
+          console.log(token);
           navigate('/login');
           return;
         }
@@ -38,6 +39,7 @@ const Profile = () => {
           setUserData(response.data.user);
           setUpdatedData(response.data.user);
         } else {
+          console.log(response);
           Cookies.remove('session_id');
           navigate('/login');
         }
@@ -109,31 +111,29 @@ const Profile = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+  
     try {
       const token = Cookies.get('session_id');
       const formData = new FormData();
-
+  
       formData.append('token', token);
       for (const key in updatedData) {
         formData.append(key, updatedData[key]);
       }
-
+  
+      // Convert croppedImage (dataURL) to Blob and append it
       if (croppedImage) {
-        formData.append('pfp', croppedImage); // Send cropped image data URL
+        const blob = await fetch(croppedImage).then(res => res.blob());
+        formData.append('pfp', blob, "profile.jpg"); // Ensure file name is provided
       }
+  
       const response = await axios.post('http://localhost/onlineplatform/backend-php/updateUser.php', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-        }, withCredentials: true
+        headers: { 'Content-Type': 'multipart/form-data' },
+        withCredentials: true,
       });
-
+  
       if (response.data.success) {
-        // If image updated, update the user's data to reflect the new image URL (or other identifier)
-        if (croppedImage) {
-            setUserData({ ...updatedData, pfp: croppedImage }); // Update pfp to cropped Image
-        } else {
-            setUserData(updatedData);
-        }
+        setUserData({ ...updatedData, pfp: croppedImage || userData.pfp });
         setEditing(false);
         alert('Profile updated successfully!');
       } else {
@@ -146,6 +146,7 @@ const Profile = () => {
       setLoading(false);
     }
   };
+  
 
   if (loading) {
     return <div className="flex justify-center items-center h-screen">Loading profile...</div>;
