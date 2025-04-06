@@ -92,12 +92,12 @@ function sendOTPEmail($email, $otp) {
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com'; // Your SMTP server
         $mail->SMTPAuth = true;
-        $mail->Username = 'ash.naruto.uzumaki@gmail.com'; // Your email
-        $mail->Password = 'ynuu bcnc olid ydan'; // Your email password
+        $mail->Username = ''; // Your email
+        $mail->Password = ''; // Your email password
         $mail->SMTPSecure = 'tls';
         $mail->Port = 587;
 
-        $mail->setFrom('ash.naruto.uzumaki@gmail.com', 'LearnNow Support');
+        $mail->setFrom('your-email-address', 'LearnNow Support');
         $mail->addAddress($email);
 
         $mail->Subject = 'Your OTP Code';
