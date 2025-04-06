@@ -46,7 +46,7 @@ if ($action === "send_otp") {
 
 if ($action === "verify_otp") {
     $email = $data['email'];
-    $otp = $data['otp'];
+    $otp = (int)$data['otp'];
 
     // Check if OTP matches and is not expired
     if (isset($_SESSION['otp']) && isset($_SESSION['otp_expires']) && $_SESSION['otp_email'] === $email) {
@@ -70,7 +70,6 @@ if ($action === "reset_password") {
         exit;
     }
 
-    $conn = getDBConnection();
     $stmt = $conn->prepare("UPDATE users SET password = ? WHERE email = ?");
     $stmt->bind_param("ss", $newPassword, $email);
     $stmt->execute();

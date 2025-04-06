@@ -1,5 +1,6 @@
 import { useState } from "react";
 import axios from "axios";
+import { useNavigate } from 'react-router-dom';
 
 export default function PasswordReset() {
   const [step, setStep] = useState(1);
@@ -8,6 +9,7 @@ export default function PasswordReset() {
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [otpCooldown, setOtpCooldown] = useState(false);
+  const navigate = useNavigate();
 
   const handleSendOTP = async () => {
     if (otpCooldown) {
@@ -19,7 +21,9 @@ export default function PasswordReset() {
       const response = await axios.post("http://localhost/onlineplatform/backend-php/password_reset.php", {
         email,
         action: "send_otp",
-      });
+      },
+      { withCredentials : true}
+    );
 
       alert(response.data.message);
       if (response.data.success) {
@@ -38,7 +42,9 @@ export default function PasswordReset() {
         email,
         otp,
         action: "verify_otp",
-      });
+      },
+      { withCredentials : true}
+    );
 
       alert(response.data.message);
       if (response.data.success) setStep(3);
@@ -58,10 +64,12 @@ export default function PasswordReset() {
         email,
         newPassword,
         action: "reset_password",
-      });
+      },
+      { withCredentials : true}
+    );
 
       alert(response.data.message);
-      if (response.data.success) setStep(1);
+      if (response.data.success) navigate('/login');
     } catch (error) {
       alert("Error resetting password");
     }
@@ -83,7 +91,7 @@ export default function PasswordReset() {
         {step === 2 && (
           <>
             <h2 className="text-xl font-semibold mb-4">Verify OTP</h2>
-            <input type="text" className="w-full p-2 border rounded mb-3" placeholder="Enter OTP" value={otp} onChange={(e) => setOtp(e.target.value)} />
+            <input type="number" className="w-full p-2 border rounded mb-3" placeholder="Enter OTP" value={otp} onChange={(e) => setOtp(e.target.value)} />
             <button className="w-full bg-green-500 text-white p-2 rounded" onClick={handleVerifyOTP}>Verify OTP</button>
           </>
         )}
